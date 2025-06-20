@@ -1,14 +1,13 @@
 #include <iostream>
 #include <map>
 #include "includes/FileManagement.h"
+#include "includes/Utils.h"
 
 int main ( int argc, char* argv[] )
 {
-    FileManagement instance(".hidden", ".mysecret");
+    FileManagement keyFileManager(".hidden", ".mysecret");
 
-    std::string groupname;
-    std::string username;
-    std::string password;
+    std::string groupname, username, password;
     
     std::map<std::string, std::string*> data =
     {
@@ -16,9 +15,12 @@ int main ( int argc, char* argv[] )
         {"user", &username},
         {"key", &password}
     };
-   
 
+    std::vector<std::string > dataLabel = { "GROUP", "USERNAME", "KEY" };
+    
+    
     std::string mode = argv[1];
+
     if( mode == "add")
     {
         for ( int i = 0; i < argc ; i++ )
@@ -27,9 +29,20 @@ int main ( int argc, char* argv[] )
             if(data.count(argument))
                 *data[argument] = argv[++i];
         }
-        instance.AddNewENtry(groupname, username, password);
+        keyFileManager.AddNewEntry(groupname, username, password);
+    }
+    else if( mode == "get" )
+    {
+        for( int i = 0; i < argc ; i++ )
+        {
+            std::string argument = argv[i];
+            if(data.count(argument))
+            {
+                *data[argument] = argv[++i];
+                keyFileManager.GetEntry(*data[argument], dataLabel );
+            }
+        }
     }
     
-
     return 1;
 }

@@ -2,12 +2,14 @@
 #define FILEMANAGEMENT_H
 
 #include <string>
+#include <vector>
 
 class FileManagement
 {
     public:
         FileManagement( std::string directory, std::string filename );
-        void AddNewENtry( std::string group , std::string user, std::string password );
+        void AddNewEntry( std::string group , std::string user, std::string password );
+        void GetEntry( std::string data, std::vector<std::string>& label );
     private:
 
     protected:
