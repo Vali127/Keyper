@@ -7,4 +7,4 @@ Maybe I'll improve it or not!
 
 ## Demo
 
-[image](.image/demo.png)
+[image](https://github.com/Vali127/Keyper/blob/main/.image/demo.png)
