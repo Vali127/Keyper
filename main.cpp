@@ -18,11 +18,17 @@ int main ( int argc, char* argv[] )
 
     std::vector<std::string > dataLabel = { "GROUP", "USERNAME", "KEY" };
     
-    
     std::string mode = argv[1];
 
     if( mode == "add")
     {
+        
+        if(!ValidNumberOfArgument(argc, mode))
+        {
+            ExitMessage(mode);
+            exit(0);
+        }
+
         for ( int i = 0; i < argc ; i++ )
         {
             std::string argument = argv[i];
@@ -33,6 +39,12 @@ int main ( int argc, char* argv[] )
     }
     else if( mode == "get" )
     {
+        if(!ValidNumberOfArgument(argc, mode))
+        {
+            ExitMessage(mode);
+            exit(0);
+        }
+
         for( int i = 0; i < argc ; i++ )
         {
             std::string argument = argv[i];
