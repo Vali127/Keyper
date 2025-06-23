@@ -7,5 +7,6 @@
  std::vector<std::string> split( std::string text, char delimiter );
  bool ValidNumberOfArgument(int n, std::string mode);
  void ExitMessage( std::string mode );
+ bool ValidArguments( char* argv[], int argc);
 
 #endif
