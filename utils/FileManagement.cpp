@@ -8,15 +8,40 @@
 
 namespace fs = std::filesystem;
 
-FileManagement::FileManagement( std::string directory, std::string filename )
+FileManagement::FileManagement()
+{    
+    if( directoryPath == "Empty" )
+        std::cout << "Please type : 'keyper set-up' to set things up !" << std::endl;
+}
+
+static void FileManagement::Setting()
+{
+    std::cout << std::left << " \033[1m" << "CONFIGURATION :" << "\033[0m"<< std::endl;
+    std::string set_dir;
+    std::string set_file;
+    std::cout << " Enter path to the directory (path from user directory ex: Mydir and it will be on ~/Mydir ) : ";
+    getline(std::in, set_dir);
+    std::cout << " Enter filename : ";
+    getline(std::in, set_file);
+    CreateDirectoryAndFile( set_dir, set_file );
+}
+
+static void FileManagement::CreateDirectoryAndFile( std::string dirname, std::string filename )
 {
     linuxHomePath = std::getenv("HOME");
-    directoryPath = linuxHomePath + "/" + directory;
+    directoryPath = linuxHomePath + "/" + dirname;
     filePath = directoryPath + "/" + filename + ".txt";
-    
+
     fs::path dir = fs::path(directoryPath);
-    if( !fs::exists(dir) )
-        fs::create_directories(dir);
+
+    if(fs::create_directories(dir))
+    {
+        std::cout << "Directory Created !!" << std::endl;
+    }
+    else
+    {
+        std::cout << "Something went wrong, couldn't create directory !!" << std::endl;
+    }
 
 }
 

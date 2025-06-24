@@ -5,7 +5,7 @@
 
 int main ( int argc, char* argv[] )
 {
-    FileManagement keyFileManager(".hidden", ".mysecret");
+    FileManagement keyFileManager();
     std::string groupname, username, password;
     std::map<std::string, std::string*> data =
     {
@@ -52,6 +52,10 @@ int main ( int argc, char* argv[] )
                 keyFileManager.GetEntry(*data[argument], dataLabel );
             }
         }
+    }
+    else if( mode == "set-up" )
+    {
+        FileManagement::Setting();
     }
     
     return 1;

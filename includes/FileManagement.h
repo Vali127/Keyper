@@ -10,12 +10,16 @@ class FileManagement
         FileManagement( std::string directory, std::string filename );
         void AddNewEntry( std::string group , std::string user, std::string password );
         void GetEntry( std::string data, std::vector<std::string>& label );
-    private:
 
+        static void Setting();
+        static void FileManagement::CreateDirectoryAndFile( std::string dirname, std::string filename );
+
+        static std::string linuxHomePath;
+        static std::string directoryPath = "Empty";
+        static std::string filePath;
+
+    private:
     protected:
-        std::string linuxHomePath;
-        std::string directoryPath;
-        std::string filePath;
 };
 
 #endif
