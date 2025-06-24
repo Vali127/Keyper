@@ -8,5 +8,8 @@
  bool ValidNumberOfArgument(int n, std::string mode);
  void ExitMessage( std::string mode );
  bool ValidArguments( char* argv[], int argc);
+ void About();
+ void HelpMessage();
+ void Usage();
 
 #endif

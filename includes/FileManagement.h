@@ -7,15 +7,20 @@
 class FileManagement
 {
     public:
-        FileManagement( std::string directory, std::string filename );
+        FileManagement();
         void AddNewEntry( std::string group , std::string user, std::string password );
         void GetEntry( std::string data, std::vector<std::string>& label );
+        
 
         static void Setting();
-        static void FileManagement::CreateDirectoryAndFile( std::string dirname, std::string filename );
+        static std::string GetDirOnConfigFile();
+        static std::string GetFileOnConfigFile();
+        static void SetDirOnConfigFile(std::string new_dir);
+        static void SetFileOnConfigFile(std::string new_file);
+        static void CreateDirectoryAndFile( std::string dirname, std::string filename );
 
-        static std::string linuxHomePath;
-        static std::string directoryPath = "Empty";
+        static std::string homePath;
+        static std::string directoryPath;
         static std::string filePath;
 
     private:

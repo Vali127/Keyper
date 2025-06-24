@@ -5,7 +5,7 @@
 
 int main ( int argc, char* argv[] )
 {
-    FileManagement keyFileManager();
+    FileManagement keyFileManager;
     std::string groupname, username, password;
     std::map<std::string, std::string*> data =
     {
@@ -15,8 +15,14 @@ int main ( int argc, char* argv[] )
     };
     std::vector<std::string > dataLabel = { "GROUP", "USERNAME", "KEY" };
     
-    std::string mode = argv[1];
+    if( argc == 1 )
+    {
+        About();
+        HelpMessage();
+        exit(0);
+    }
 
+    std::string mode = argv[1];
     if( mode == "add")
     {
         if(!ValidNumberOfArgument(argc, mode) || !ValidArguments( argv, argc ))
@@ -37,7 +43,7 @@ int main ( int argc, char* argv[] )
 
     else if( mode == "get" )
     {
-        if(!ValidNumberOfArgument(argc, mode))
+        if(!ValidNumberOfArgument(argc, mode) || !ValidArguments( argv, argc))
         {
             ExitMessage(mode);
             exit(0);
@@ -56,6 +62,11 @@ int main ( int argc, char* argv[] )
     else if( mode == "set-up" )
     {
         FileManagement::Setting();
+    }
+    
+    else if( mode == "help" )
+    {
+        Usage();
     }
     
     return 1;
