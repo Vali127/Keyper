@@ -18,6 +18,7 @@ int main ( int argc, char* argv[] )
     if( argc == 1 )
     {
         About();
+        FileManagement::DisplayInfo();
         HelpMessage();
         exit(0);
     }

@@ -17,6 +17,7 @@ class FileManagement
         void DecryptSecretFile();   
 
         static void Setting();
+        static void DisplayInfo();
         static void CreateDirectoryAndFile( std::string dirname, std::string filename );
         static void SetDirOnConfigFile(std::string new_dir);
         static void SetFileOnConfigFile(std::string new_file);

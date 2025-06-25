@@ -118,6 +118,12 @@ void FileManagement::Setting()
     std::cout << " Enter filename : ";
     std::getline(std::cin, set_file);
 
+    if(set_dir.starts_with("/"))
+    {
+        std::cout << "Directory name shouldn't starts with '/' " << std::endl;
+        return;
+    }
+
     CreateDirectoryAndFile(set_dir, set_file);
     SetDirOnConfigFile(set_dir);
     SetFileOnConfigFile(set_file);
@@ -125,10 +131,16 @@ void FileManagement::Setting()
     filePath = GetFileOnConfigFile();
 }
 
+void FileManagement::DisplayInfo()
+{
+    std::string file_path = GetFileOnConfigFile();
+    std::cout << "\033[1m" << "File in usage : " << "\033[0m" << file_path << std::endl;
+}
+
 void FileManagement::CreateDirectoryAndFile( std::string dirname, std::string filename )
 {
     std::string directory_path = homePath + "/" + dirname;
-    std::string file_path = directory_path + "/" + filename + ".txt";
+    std::string file_path = (directory_path.ends_with("/")) ? directory_path + filename + ".txt" : directory_path + "/" + filename + ".txt" ;
     fs::path dir = fs::path(directory_path);
 
     std::cout << "\n" << "\033[1m" << "RESULT :" << "\033[0m" << std::endl;
@@ -222,7 +234,7 @@ void FileManagement::SetFileOnConfigFile(std::string new_file)
         return;
     }
     std::string dir_path = GetDirOnConfigFile();
-    std::string entry = "FILE=" + dir_path + "/" + new_file + ".txt";
+    std::string entry = (dir_path.ends_with("/")) ? "FILE=" + dir_path + new_file + ".txt" : "FILE=" + dir_path + "/" + new_file + ".txt";
     config_file << "\n";
     config_file << entry;
     config_file.close();
