@@ -18,6 +18,8 @@ sudo sh ./install.sh
 ```
 
 ## Demo
-![image](.image/demo1.png)
+![image](./.media/demo.gif)
 
-![image](.image/demo2.png)
+
+The content can' t be shown directly
+![image](./.media/demo.png)
