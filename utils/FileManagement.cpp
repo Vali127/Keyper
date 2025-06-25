@@ -11,6 +11,7 @@
 namespace fs = std::filesystem;
  
 std::string FileManagement::homePath = std::string(std::getenv("HOME"));
+std::string FileManagement::configFile = homePath + "/.config/keyper.conf";
 std::string FileManagement::directoryPath = GetDirOnConfigFile();
 std::string FileManagement::filePath = GetFileOnConfigFile();
  
@@ -177,7 +178,7 @@ std::string FileManagement::GetDirOnConfigFile()
     std::string line;
 
     std::ifstream config_file;
-    config_file.open("keyper.conf", std::ios::in);
+    config_file.open(configFile, std::ios::in);
     if(!config_file.is_open())
         return "null";
     while(std::getline(config_file, line))
@@ -196,7 +197,7 @@ std::string FileManagement::GetDirOnConfigFile()
 std::string FileManagement::GetFileOnConfigFile()
 {    
     std::ifstream config_file;
-    config_file.open("keyper.conf", std::ios::in);
+    config_file.open(configFile, std::ios::in);
     if(!config_file.is_open())
         return "null";
 
@@ -213,7 +214,7 @@ std::string FileManagement::GetFileOnConfigFile()
 void FileManagement::SetDirOnConfigFile(std::string new_dir)
 { 
     std::ofstream config_file;
-    config_file.open("keyper.conf", std::ios::out);
+    config_file.open(configFile, std::ios::out);
     if(!config_file.is_open())
     {
         std::cerr << "ERROR : can 't open config file" << std::endl;
@@ -227,7 +228,7 @@ void FileManagement::SetDirOnConfigFile(std::string new_dir)
 void FileManagement::SetFileOnConfigFile(std::string new_file)
 { 
     std::ofstream config_file;
-    config_file.open("keyper.conf", std::ios::app);
+    config_file.open(configFile, std::ios::app);
     if(!config_file.is_open())
     {
         std::cerr << "ERROR : Can' t open config file" << std::endl;

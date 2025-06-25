@@ -25,6 +25,7 @@ class FileManagement
         static std::string GetFileOnConfigFile();
 
         static std::string homePath;
+        static std::string configFile;
         static std::string directoryPath;
         static std::string filePath;
 };
