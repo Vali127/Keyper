@@ -60,6 +60,11 @@ int main ( int argc, char* argv[] )
             }
         }
     }
+
+    else if( mode == "get-all" )
+    {
+        keyFileManager.DisplayAllEntry(dataLabel);
+    }
     
     else if( mode == "set-up" )
     {

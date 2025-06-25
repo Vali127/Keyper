@@ -10,6 +10,7 @@ class FileManagement
         FileManagement();
         void AddNewEntry( std::string group , std::string user, std::string password );
         void DisplayEntry( std::string data, std::vector<std::string>& label );
+        void DisplayAllEntry( std::vector<std::string>& label);
         void XorEncryption();
         void FileTextToBinary();
         void FileBinaryToText();

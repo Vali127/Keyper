@@ -287,3 +287,27 @@ void FileManagement::DisplayEntry( std::string data , std::vector<std::string>& 
 
     EncryptSecretFile();
 }
+
+void FileManagement::DisplayAllEntry( std::vector<std::string>& label )
+{
+    DecryptSecretFile();
+
+    std::string line;
+    std::ifstream secretFile;
+    secretFile.open(FileManagement::filePath, std::ios::in );
+    if(!secretFile.is_open())
+    {
+        std::cerr << "ERROR : Couldn 't open" << filePath << " !!" << std::endl;
+        return;
+    }
+    while( std::getline(secretFile, line) )
+    {
+        std::vector<std::string> values = split( line, ':');
+        std::cout << "" << std::endl;
+        for( int i = 0; i < (int)values.size() ; ++i  )
+            std::cout << std::left << " \033[1m" << std::setw(10) << label[i] << "\033[0m" << std::left << std::setw(2) << ": " << values[i] << std::endl;
+    }
+    secretFile.close();
+
+    EncryptSecretFile();
+}
