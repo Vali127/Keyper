@@ -14,7 +14,7 @@ I made it for me, However if you are interested...
 
 - just execute the install.sh.
 ```bash
-sudo sh ./install.sh
+sh ./install.sh
 ```
 
 ## Demo
