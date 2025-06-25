@@ -141,7 +141,7 @@ void FileManagement::DisplayInfo()
 void FileManagement::CreateDirectoryAndFile( std::string dirname, std::string filename )
 {
     std::string directory_path = homePath + "/" + dirname;
-    std::string file_path = (directory_path.ends_with("/")) ? directory_path + filename + ".txt" : directory_path + "/" + filename + ".txt" ;
+    std::string file_path = (directory_path.ends_with("/")) ? directory_path + filename : directory_path + "/" + filename ;
     fs::path dir = fs::path(directory_path);
 
     std::cout << "\n" << "\033[1m" << "RESULT :" << "\033[0m" << std::endl;
@@ -235,7 +235,7 @@ void FileManagement::SetFileOnConfigFile(std::string new_file)
         return;
     }
     std::string dir_path = GetDirOnConfigFile();
-    std::string entry = (dir_path.ends_with("/")) ? "FILE=" + dir_path + new_file + ".txt" : "FILE=" + dir_path + "/" + new_file + ".txt";
+    std::string entry = (dir_path.ends_with("/")) ? "FILE=" + dir_path + new_file : "FILE=" + dir_path + "/" + new_file ;
     config_file << "\n";
     config_file << entry;
     config_file.close();
