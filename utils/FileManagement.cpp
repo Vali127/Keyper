@@ -1,42 +1,110 @@
 #include <iostream>
+#include <iomanip>
+#include <cstdlib>
 #include <bitset>
+#include <filesystem>
 #include <fstream>
 #include <vector>
-#include <cstdlib>
-#include <filesystem>
-#include <iomanip>
-#include "../includes/FileManagement.h"
-#include "../includes/Utils.h"
+#include "../headers/FileManagement.h"
+#include "../headers/Utils.h"
 
 namespace fs = std::filesystem;
-
-/*Attribute*/
+ 
 std::string FileManagement::homePath = std::string(std::getenv("HOME"));
 std::string FileManagement::directoryPath = GetDirOnConfigFile();
 std::string FileManagement::filePath = GetFileOnConfigFile();
-
-
-
-
+ 
 FileManagement::FileManagement()
 {
     if(directoryPath == "null")
     {
         About();
         Setting();
-        Encrypting();
+        EncryptSecretFile();
+        exit(0);
     }
 }
 
-void FileManagement::Encrypting()
+void FileManagement::EncryptSecretFile()
 {
     XorEncryption();
-    CharToBinary();
+    FileTextToBinary();
 }
-void FileManagement::Decrypting()
+void FileManagement::DecryptSecretFile()
 {
-    BinaryToChar();
+    FileBinaryToText();
     XorEncryption();
+}
+
+void FileManagement::XorEncryption()
+{
+    std::fstream secretFile;
+    secretFile.open(filePath, std::ios::out | std::ios::in | std::ios::binary);
+    if(!secretFile.is_open())
+    {
+        std::cerr << "ERROR : can 't access " << filePath << std::endl;
+        return;
+    }
+    char chr;
+    int key = 0x45;
+    while(secretFile.get(chr))
+    {
+        secretFile.seekp(-1, std::ios::cur);
+        secretFile.put(chr ^ key);
+        secretFile.flush();
+    }
+    secretFile.close();
+}
+
+void FileManagement::FileTextToBinary()
+{
+    std::fstream secretFile;
+    secretFile.open(filePath,std::ios::in | std::ios::binary);
+    if(!secretFile.is_open())
+    {
+        std::cerr << "ERROR : can 't access " << filePath << std::endl;        
+        return;
+    }
+    std::string binary_value;
+    char chr;    
+    while(secretFile.get(chr))
+        binary_value += std::bitset<8>(static_cast<unsigned char>(chr)).to_string();
+    secretFile.close();
+
+    secretFile.open(filePath,std::ios::out | std::ios::trunc);
+    if(!secretFile.is_open())
+    {
+        std::cerr << "ERROR : can 't access " << filePath << std::endl;
+        return;
+    }
+    secretFile << binary_value;
+    secretFile.close();
+}
+
+void FileManagement::FileBinaryToText()
+{
+    std::fstream secretFile;
+    secretFile.open(filePath, std::ios::in | std::ios::binary );
+    if(!secretFile.is_open())
+    {
+        std::cerr << "ERROR : can 't access " << filePath << std::endl;
+        return;
+    }
+    std::string binary_value;
+    std::string line;
+    while(std::getline(secretFile, line))
+        binary_value += line;
+    secretFile.close();
+    std::string text_value = BinaryToString(binary_value);
+
+    secretFile.open(filePath, std::ios::out | std::ios::trunc);
+    if(!secretFile.is_open())
+    {
+        std::cerr << "ERROR : can 't access " << filePath << std::endl;
+        return;
+    }
+    secretFile << text_value;
+    secretFile.close();
 }
 
 void FileManagement::Setting()
@@ -75,7 +143,7 @@ void FileManagement::CreateDirectoryAndFile( std::string dirname, std::string fi
     }
     else
     {
-        std::cout << "Something went wrong, couldn't create directory !!" << std::endl;
+        std::cerr << "Something went wrong, couldn't create directory !!" << std::endl;
         return;
     }
     std::ofstream file;
@@ -87,62 +155,10 @@ void FileManagement::CreateDirectoryAndFile( std::string dirname, std::string fi
     }
     else
     {
-        std::cout << "Something went wrong, couldn't create file !!" << std::endl;
+        std::cerr << "Something went wrong, couldn't create file !!" << std::endl;
     }
 }
-
-void FileManagement::AddNewEntry( std::string group , std::string user, std::string password )
-{
-    Decrypting();
-    
-    std::ofstream secretFile;
-    secretFile.open(filePath, std::ios::out | std::ios::app );
-    if(secretFile.is_open())
-    {
-       std::string entry = group + ':' + user + ':' + password;
-       secretFile << entry;
-       secretFile << "\n";
-       secretFile.close();
-       std::cout << "RESULT : Entry added successfully at : '" << filePath << "' !! " << std::endl;
-    }
-    else
-    {
-       std::cout << "ERROR : Couldnèt add a new entry!!" << std::endl;
-    }
-
-    Encrypting();
-}
-
-void FileManagement::GetEntry( std::string data , std::vector<std::string>& label )
-{
-    Decrypting();
-
-    std::string line;
-    std::ifstream secretFile;
-    secretFile.open(FileManagement::filePath, std::ios::in );
-    if(secretFile.is_open())
-    {
-        while( std::getline(secretFile, line) )
-        {
-            if( line.find(data) != std::string::npos )
-            {
-                std::vector<std::string> values = split( line, ':');
-                std::cout << "" << std::endl;
-                for( int i = 0; i < (int)values.size() ; ++i  )
-                {
-                    std::cout << std::left << " \033[1m" << std::setw(10) << label[i] << "\033[0m" << std::left << std::setw(2) << ": " << values[i] << std::endl;
-                }
-            }
-        }
-        secretFile.close();
-    }
-
-    Encrypting();
-}   
-
-    /*For the config File*/
-    
-
+ 
 std::string FileManagement::GetDirOnConfigFile()
 {
     std::vector<std::string> tmp;
@@ -150,157 +166,111 @@ std::string FileManagement::GetDirOnConfigFile()
 
     std::ifstream config_file;
     config_file.open("keyper.conf", std::ios::in);
-    if(config_file.is_open())
+    if(!config_file.is_open())
+        return "null";
+    while(std::getline(config_file, line))
     {
-        
-        while(std::getline(config_file, line))
+        if(line.find("DIR") != std::string::npos)
         {
-            if(line.find("DIR") != std::string::npos)
-            {
-                tmp = split(line, '=');
-                config_file.close();
-                return tmp[1];
-            }
+            tmp = split(line, '=');
             config_file.close();
-            return "null";
+            return tmp[1];
         }
-                
+        config_file.close();
     }
     return "null";
-    
 }
 
 std::string FileManagement::GetFileOnConfigFile()
-{
-    std::vector<std::string> tmp;
-    std::string line;
-        
+{    
     std::ifstream config_file;
     config_file.open("keyper.conf", std::ios::in);
-    if(config_file.is_open())
-    {
-        while(std::getline(config_file, line))
-            if(line.find("FILE") != std::string::npos)
-                tmp = split(line, '=');
+    if(!config_file.is_open())
+        return "null";
 
-        config_file.close();
-        return tmp[1];
-    }
-    return "null";
+    std::vector<std::string> tmp;
+    std::string line;
+    while(std::getline(config_file, line))
+    if(line.find("FILE") != std::string::npos)
+        tmp = split(line, '=');
+    config_file.close();
+    return tmp[1];
     
 }
 
 void FileManagement::SetDirOnConfigFile(std::string new_dir)
-{
-    
-    std::string entry = "DIR=" + homePath + "/" + new_dir;
-
+{ 
     std::ofstream config_file;
     config_file.open("keyper.conf", std::ios::out);
-    if(config_file.is_open())
+    if(!config_file.is_open())
     {
-        config_file << entry;
-        config_file.close();
+        std::cerr << "ERROR : can 't open config file" << std::endl;
+        return;
     }
-    else
-    {
-        std::cout << "ERROR : can 't open config file" << std::endl;
-    }
+    std::string entry = "DIR=" + homePath + "/" + new_dir;
+    config_file << entry;
+    config_file.close();
 }
 
 void FileManagement::SetFileOnConfigFile(std::string new_file)
-{
-    std::string dir_path = GetDirOnConfigFile();
-    std::string entry = "FILE=" + dir_path + "/" + new_file + ".txt";
-
+{ 
     std::ofstream config_file;
     config_file.open("keyper.conf", std::ios::app);
-    if(config_file.is_open())
+    if(!config_file.is_open())
     {
-        config_file << "\n";
-        config_file << entry;
-        config_file.close();
-    }
-    else
-    {
-        std::cout << "ERROR : Can' t open config file" << std::endl;
-    }
-}
-
-    /*For file encryption and conversion*/
-
-void FileManagement::XorEncryption()
-{
-    std::fstream secretFile;
-    secretFile.open(filePath, std::ios::out | std::ios::in | std::ios::binary);
-    if(!secretFile.is_open())
-    {
-        std::cerr << "ERROR : can 't access " << filePath << std::endl;
+        std::cerr << "ERROR : Can' t open config file" << std::endl;
         return;
     }
-    char chr;
-    int key = 0x45;
-    while(secretFile.get(chr))
-    {
-        secretFile.seekp(-1, std::ios::cur);
-        secretFile.put(chr ^ key);
-        secretFile.flush();
-    }
+    std::string dir_path = GetDirOnConfigFile();
+    std::string entry = "FILE=" + dir_path + "/" + new_file + ".txt";
+    config_file << "\n";
+    config_file << entry;
+    config_file.close();
+} 
 
+void FileManagement::AddNewEntry( std::string group , std::string user, std::string password )
+{
+    DecryptSecretFile();
+    
+    std::ofstream secretFile;
+    secretFile.open(filePath, std::ios::out | std::ios::app );
+    if(!secretFile.is_open())
+    {
+        std::cerr << "ERROR : Couldn' t open " << filePath << "!!" << std::endl;
+        return;
+    }
+    std::string entry = group + ':' + user + ':' + password;
+    secretFile << entry;
+    secretFile << "\n";
     secretFile.close();
+    std::cout << "RESULT : Entry added successfully at : '" << filePath << "' !! " << std::endl;
+
+    EncryptSecretFile();
 }
 
-void FileManagement::CharToBinary()
+void FileManagement::DisplayEntry( std::string data , std::vector<std::string>& label )
 {
-    std::fstream secretFile;
-    secretFile.open(filePath,std::ios::in | std::ios::binary);
+    DecryptSecretFile();
 
-    std::string binary_value;
-
-    if(!secretFile.is_open())
-    {
-        std::cerr << "ERROR : can 't access " << filePath << std::endl;        
-        return;
-    }
-    char chr;    
-    while(secretFile.get(chr))
-        binary_value += std::bitset<8>(static_cast<unsigned char>(chr)).to_string();
-    secretFile.close();
-
-
-    secretFile.open(filePath,std::ios::out | std::ios::trunc);
-    if(!secretFile.is_open())
-    {
-        std::cerr << "ERROR : can 't access " << filePath << std::endl;
-        return;
-    }
-    secretFile << binary_value;
-        secretFile.close();
-}
-
-void FileManagement::BinaryToChar()
-{
-    std::fstream secretFile;
-    secretFile.open(filePath, std::ios::in | std::ios::binary );
-    std::string binary_value;
-    if(!secretFile.is_open())
-    {
-        std::cerr << "ERROR : can 't access " << filePath << std::endl;
-        return;
-    }
     std::string line;
-    while(std::getline(secretFile, line))
-        binary_value += line;
-    secretFile.close();
-
-    std::string text_value = BinaryToString(binary_value);
-
-    secretFile.open(filePath, std::ios::out | std::ios::trunc);
+    std::ifstream secretFile;
+    secretFile.open(FileManagement::filePath, std::ios::in );
     if(!secretFile.is_open())
     {
-        std::cerr << "ERROR : can 't access " << filePath << std::endl;
+        std::cerr << "ERROR : Couldn 't open" << filePath << " !!" << std::endl;
         return;
     }
-    secretFile << text_value;
+    while( std::getline(secretFile, line) )
+    {
+        if( line.find(data) != std::string::npos )
+        {
+            std::vector<std::string> values = split( line, ':');
+            std::cout << "" << std::endl;
+            for( int i = 0; i < (int)values.size() ; ++i  )
+                std::cout << std::left << " \033[1m" << std::setw(10) << label[i] << "\033[0m" << std::left << std::setw(2) << ": " << values[i] << std::endl;
+        }
+    }
     secretFile.close();
+
+    EncryptSecretFile();
 }

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <map>
-#include "includes/FileManagement.h"
-#include "includes/Utils.h"
+#include "headers/FileManagement.h"
+#include "headers/Utils.h"
 
 int main ( int argc, char* argv[] )
 {
@@ -55,10 +55,11 @@ int main ( int argc, char* argv[] )
             if(data.count(argument))
             {
                 *data[argument] = argv[++i];
-                keyFileManager.GetEntry(*data[argument], dataLabel );
+                keyFileManager.DisplayEntry(*data[argument], dataLabel );
             }
         }
     }
+    
     else if( mode == "set-up" )
     {
         FileManagement::Setting();
