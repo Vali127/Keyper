@@ -87,6 +87,7 @@ void Usage()
     std::cout << "How to use it ?" << std::endl;
     std::cout << std::left << " \033[1m" << std::setw(20) << "Add new entry" << "\033[0m" << std::left << std::setw(5) << ": " << "keyper add group <groupname> user <username> key <key>" << std::endl;
     std::cout << std::left << " \033[1m" << std::setw(20) << "Get an entry" << "\033[0m" << std::left << std::setw(5) << ": " << "keyper get [ [group <groupname>] | [user <username>] | [key <key>] ]" << std::endl;
+    std::cout << std::left << " \033[1m" << std::setw(20) << "Get all entry" << "\033[0m" << std::left << std::setw(5) << ": " << "keyper get-all" << std::endl;
     std::cout << std::left << " \033[1m" << std::setw(20) << "Setting" << "\033[0m" << std::left << std::setw(5) << ": " << "keyper set-up" << std::endl;
     std::cout << std::left << " \033[1m" << std::setw(20) << "show usage" << "\033[0m" << std::left << std::setw(5) << ": " << "keyper help" << std::endl;
 }
