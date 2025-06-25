@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <bitset>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -89,4 +90,20 @@ void Usage()
     std::cout << std::left << " \033[1m" << std::setw(20) << "Get an entry" << "\033[0m" << std::left << std::setw(5) << ": " << "keyper get [ [group <groupname>] | [user <username>] | [key <key>] ]" << std::endl;
     std::cout << std::left << " \033[1m" << std::setw(20) << "Setting" << "\033[0m" << std::left << std::setw(5) << ": " << "keyper set-up" << std::endl;
     std::cout << std::left << " \033[1m" << std::setw(20) << "show usage" << "\033[0m" << std::left << std::setw(5) << ": " << "keyper help" << std::endl;
+}
+
+std::string BinaryToString(std::string data)
+{
+    std::string result;
+
+    if( int(data.size()) % 8 )
+        return "Not convertible";
+    
+    for( std::size_t i = 0; i < data.size(); i+=8 )
+    {
+        std::bitset<8> bits(data.substr(i, 8));
+        result+=  static_cast<char>(bits.to_ulong());
+    }
+
+    return result;
 }
