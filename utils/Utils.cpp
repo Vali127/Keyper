@@ -21,7 +21,7 @@ bool ValidNumberOfArgument( int n, std::string mode)
 {
     if( mode == "add" )
         return (n == 8);
-    else if( mode == "get" )
+    else if( mode == "get" || mode == "remove" )
         return (n == 4);
     return false;
 }

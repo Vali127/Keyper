@@ -65,6 +65,25 @@ int main ( int argc, char* argv[] )
     {
         keyFileManager.DisplayAllEntry(dataLabel);
     }
+
+    else if( mode == "remove" )
+    {
+        if(!ValidNumberOfArgument(argc, mode) || !ValidArguments( argv, argc))
+        {
+            ExitMessage(mode);
+            exit(0);
+        }
+
+        for( int i = 0; i < argc ; i++ )
+        {
+            std::string argument = argv[i];
+            if(data.count(argument))
+            {
+                *data[argument] = argv[++i];
+                keyFileManager.RemoveEntry(*data[argument]);
+            }
+        }
+    }
     
     else if( mode == "set-up" )
     {

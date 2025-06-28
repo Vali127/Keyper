@@ -311,3 +311,35 @@ void FileManagement::DisplayAllEntry( std::vector<std::string>& label )
 
     EncryptSecretFile();
 }
+
+void FileManagement::RemoveEntry( std::string data)
+{
+    DecryptSecretFile();
+
+    std::string tmpFilePath = filePath + ".tmp" ;
+    std::ofstream tmpFile;
+    tmpFile.open( tmpFilePath, std::ios::app );
+    std::ifstream secretFile;
+    secretFile.open( filePath, std::ios::in);
+
+    if( !(tmpFile.is_open()) || !(secretFile.is_open()) )
+    {
+        std::cerr << "ERROR : operation failed!" << std::endl;
+        return;
+    }
+    std::string line;
+    while(std::getline(secretFile, line))
+        if( line.find(data) == std::string::npos )
+        {
+            tmpFile << line;
+            tmpFile << "\n";
+        }
+    
+    tmpFile.close();
+    secretFile.close();
+
+    fs::remove(filePath);
+    fs::rename(tmpFilePath, filePath);
+
+    EncryptSecretFile();
+}
