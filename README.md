@@ -1,11 +1,11 @@
 
 # Howdy !!
-This is a bit of code I did in C++ for my free time and for my personal usage, it aims to keep some keys in a **regular file**.
+This is a repository for my personal CLI-tool.
 
-I just used xor encryption, and converted all character into a binary string to avoid someone to watch the content of the file.
-Just hope my IT friend wouldn't be too curious.
+I felt the need to create a tool to store my keys on my local computer.
 
-Maybe I'll improve it or not!
+it can perform basic tasks sush as : adding, removing, getting the stored keys.
+For a simple security measurement , I used XORencryption and converted all strings into a binary number sequences(Yes nothing more).
 
 ## Instructions
 I made it for me, However if you are interested...
